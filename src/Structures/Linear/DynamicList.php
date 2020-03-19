@@ -161,12 +161,22 @@ class DynamicList
 
     public function toArray(): array
     {
-        $this->toFirst();
-        $temp = [];
-        while ($this->hasAccess()) {
-            $temp[] = $this->getContent();
-            $this->next();
+        $list = clone $this;
+        $list->toFirst();
+        $arr = [];
+        $list->forEach(function ($el) use (&$arr) {
+            $arr[] = $el;
+        });
+        return $arr;
+    }
+
+    public function forEach(callable $callback)
+    {
+        $list = clone $this;
+        $list->toFirst();
+        while ($list->hasAccess()) {
+            $callback($list->getContent());
+            $list->next();
         }
-        return $temp;
     }
 }

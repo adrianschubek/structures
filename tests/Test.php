@@ -1,6 +1,7 @@
 <?php
 
 use adrianschubek\Structures\Linear\DynamicList;
+use adrianschubek\Structures\Linear\Queue;
 
 /**
  * Copyright (c) 2020. Adrian Schubek
@@ -38,5 +39,27 @@ class Test2 extends PHPUnit\Framework\TestCase
         $list->concat($list2);
 
         $this->assertSame(["Berlin", "Munich", "Cologne", "Düsseldorf", "Essen"], $list->toArray());
+    }
+
+    public function test_to_array_queue()
+    {
+        $queue = new Queue();
+        $queue->enqueue("Berlin");
+        $queue->enqueue("Munich");
+        $queue->enqueue("Cologne");
+
+        $this->assertSame(["Berlin", "Munich", "Cologne"], $queue->toArray());
+    }
+
+    public function test_dequeue_queue()
+    {
+        $queue = new Queue();
+        $queue->enqueue("Berlin");
+        $queue->enqueue("Munich");
+        $queue->enqueue("Cologne");
+
+        $queue->dequeue();
+
+        $this->assertSame(["Munich", "Cologne"], $queue->toArray());
     }
 }
