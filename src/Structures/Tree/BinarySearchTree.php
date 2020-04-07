@@ -7,10 +7,10 @@
 namespace adrianschubek\Structures\Tree;
 
 
-use adrianschubek\Structures\Wrapper\BoolWrapper;
 use adrianschubek\Structures\Wrapper\FloatWrapper;
 use adrianschubek\Structures\Wrapper\IntWrapper;
 use adrianschubek\Structures\Wrapper\StringWrapper;
+use adrianschubek\Structures\Wrapper\Wrapper;
 
 class BinarySearchTree
 {
@@ -150,17 +150,63 @@ class BinarySearchTree
         return $this->node->getLeftTree();
     }
 
-    public function setLeftTree(BinarySearchTree $tree)
+    public function toArray(): array
+    {
+        $data = [];
+        $this->walk(function ($el) use (&$data) {
+            if ($el instanceof Wrapper) {
+                $data[] = $el->unpack();
+            } else {
+                $data[] = $el;
+            }
+        });
+        return $data;
+    }
+
+    public function walk(callable $callback)
+    {
+        $this->walkInternal($callback, $this);
+    }
+
+    private function walkInternal(callable $callback, BinarySearchTree $tree)
+    {
+        if (!$tree->isEmpty()) {
+            $this->walkInternal($callback, $tree->getLeftTree());
+
+            $callback($tree->getContent());
+
+            $this->walkInternal($callback, $tree->getRightTree());
+        }
+    }
+
+    public function same(BinarySearchTree $tree): bool
+    {
+
+    }
+
+    public function setLeftAndRightTree(BinarySearchTree $left, BinarySearchTree $right): self
+    {
+        if (!$this->isEmpty() && $left !== null && $right !== null) {
+            $this->node->setLeftTree($left);
+            $this->node->setRightTree($right);
+        }
+
+        return $this;
+    }
+
+    public function setLeftTree(BinarySearchTree $tree): self
     {
         if (!$this->isEmpty() && $tree !== null) {
             $this->node->setLeftTree($tree);
         }
+        return $tree;
     }
 
-    public function setRightTree(BinarySearchTree $tree)
+    public function setRightTree(BinarySearchTree $tree): self
     {
         if (!$this->isEmpty() && $tree !== null) {
             $this->node->setRightTree($tree);
         }
+        return $tree;
     }
 }

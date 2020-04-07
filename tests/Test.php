@@ -4,7 +4,9 @@ use adrianschubek\Structures\Linear\Deque;
 use adrianschubek\Structures\Linear\DynamicList;
 use adrianschubek\Structures\Linear\Queue;
 use adrianschubek\Structures\Tree\BinarySearchTree;
+use adrianschubek\Structures\Tree\BinarySearchTreeConverter;
 use adrianschubek\Structures\Tree\BinaryTree;
+use adrianschubek\Structures\Wrapper\StringWrapper;
 
 /**
  * Copyright (c) 2020. Adrian Schubek
@@ -212,6 +214,20 @@ class Test2 extends PHPUnit\Framework\TestCase
         $this->assertInstanceOf(BinaryTree::class, $tree);
     }
 
+    public function test_binary_tree_init_complex()
+    {
+        $tree = new BinaryTree("Berlin");
+
+        $tree->setLeftTree((new BinaryTree("Hamburg"))->setLeftAndRightTree(
+            new BinaryTree("Düsseldorf"),
+            new BinaryTree("Essen")
+        ));
+
+        $tree->setRightTree(new BinaryTree("Munich"))->setLeftTree(new BinaryTree("Frankfurt"));
+
+        $this->assertInstanceOf(BinaryTree::class, $tree);
+    }
+
     public function test_binary_searchtree_init()
     {
         $tree = new BinarySearchTree("Berlin");
@@ -221,10 +237,45 @@ class Test2 extends PHPUnit\Framework\TestCase
         $this->assertInstanceOf(BinarySearchTree::class, $tree);
     }
 
-
-
-    public function test_binary_tree_converter()
+    public function test_binary_searchtree_init2()
     {
-        $this->assertSame(0, 0);
+        $tree = new BinarySearchTree("Berlin", new BinarySearchTree("Hamburg"), new BinarySearchTree("Munich"));
+
+        $this->assertInstanceOf(BinarySearchTree::class, $tree);
+    }
+
+    public function test_binary_searchtree_insert()
+    {
+        $tree = new BinarySearchTree("Berlin");
+        $tree->insert(new StringWrapper("Hamburg"));
+        $tree->insert(new StringWrapper("Munich"));
+
+        $this->assertInstanceOf(BinarySearchTree::class, $tree);
+    }
+
+    public function test_binary_searchtree_same()
+    {
+        $tree = new BinarySearchTree("Berlin");
+        $tree->insert(new StringWrapper("Hamburg"));
+        $tree->insert(new StringWrapper("Munich"));
+        $tree->insert(new StringWrapper("Frankfurt"));
+
+        $t = BinarySearchTreeConverter::fromArray(["Berlin", "Hamburg", "Munich", "Frankfurt"]);
+
+        self::assertSame($tree->toArray(), $t->toArray());
+    }
+
+    public function test_binary_searchtree_converter()
+    {
+        $tree = new BinarySearchTree("Berlin");
+        $tree->insert(new StringWrapper("Hamburg"));
+        $tree->insert(new StringWrapper("Munich"));
+        $tree->insert(new StringWrapper("Frankfurt"));
+
+        $list = new DynamicList(["Berlin", "Hamburg", "Munich", "Frankfurt"]);
+
+        $t = BinarySearchTreeConverter::fromList($list);
+
+        $this->assertSame($tree->toArray(), $t->toArray());
     }
 }

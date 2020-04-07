@@ -51,18 +51,30 @@ class BinaryTree
         return $this->node->getContent();
     }
 
-    public function setLeftTree(BinaryTree $tree)
+    public function setLeftAndRightTree(BinaryTree $left, BinaryTree $right): self
+    {
+        if (!$this->isEmpty() && $left !== null && $right !== null) {
+            $this->node->setLeftTree($left);
+            $this->node->setRightTree($right);
+        }
+
+        return $this;
+    }
+
+    public function setLeftTree(BinaryTree $tree): self
     {
         if (!$this->isEmpty() && $tree !== null) {
             $this->node->setLeftTree($tree);
         }
+        return $this;
     }
 
-    public function setRightTree(BinaryTree $tree)
+    public function setRightTree(BinaryTree $tree): self
     {
         if (!$this->isEmpty() && $tree !== null) {
             $this->node->setRightTree($tree);
         }
+        return $this;
     }
 
     public function getLeftTree(): BinaryTree
