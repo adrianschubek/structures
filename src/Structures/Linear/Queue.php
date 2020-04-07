@@ -7,10 +7,17 @@
 namespace adrianschubek\Structures\Linear;
 
 
-class Queue
+class Queue implements LinearTraversable
 {
     private ?QueueNode $first = null;
     private ?QueueNode $last = null;
+
+    public function __construct($objects = [])
+    {
+        foreach ((array)$objects as $object) {
+            $this->enqueue($object);
+        }
+    }
 
     public function enqueue($content)
     {
@@ -33,9 +40,8 @@ class Queue
 
     public function toArray(): array
     {
-        $list = clone $this;
         $arr = [];
-        $list->forEach(function ($el) use (&$arr) {
+        $this->forEach(function ($el) use (&$arr) {
             $arr[] = $el;
         });
         return $arr;
@@ -60,9 +66,5 @@ class Queue
         if ($this->isEmpty()) return;
 
         $this->first = $this->first->getNext();
-        if ($this->isEmpty()) {
-            $this->first = null;
-            $this->last = null;
-        }
     }
 }

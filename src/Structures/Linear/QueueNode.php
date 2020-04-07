@@ -22,7 +22,7 @@ class QueueNode
         return $this->next;
     }
 
-    public function setNext(QueueNode $node)
+    public function setNext(?QueueNode $node)
     {
         $this->next = $node;
     }

@@ -9,7 +9,7 @@ namespace adrianschubek\Structures\Tree;
 
 class BinaryTreeNode
 {
-    private $object = null;
+    private $object;
     private BinaryTree $left, $right;
 
     public function __construct($object)

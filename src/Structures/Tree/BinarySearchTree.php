@@ -7,12 +7,26 @@
 namespace adrianschubek\Structures\Tree;
 
 
+use adrianschubek\Structures\Wrapper\BoolWrapper;
+use adrianschubek\Structures\Wrapper\FloatWrapper;
+use adrianschubek\Structures\Wrapper\IntWrapper;
+use adrianschubek\Structures\Wrapper\StringWrapper;
+
 class BinarySearchTree
 {
     private ?BinarySearchTreeNode $node = null;
 
     public function __construct($object = null, BinarySearchTree $left = null, BinarySearchTree $right = null)
     {
+        if ($object === null) {
+            return;
+        } elseif (is_string($object)) {
+            $object = new StringWrapper($object);
+        } elseif (is_float($object)) {
+            $object = new FloatWrapper($object);
+        } elseif (is_int($object)) {
+            $object = new IntWrapper($object);
+        }
         $this->node = new BinarySearchTreeNode($object);
         if ($left !== null) {
             $this->node->setLeftTree($left);
@@ -118,7 +132,7 @@ class BinarySearchTree
         return $this->node->getRightTree();
     }
 
-    public function search(Comparable $object): Comparable
+    public function search(Comparable $object): ?Comparable
     {
         if ($this->isEmpty() || $object === null) return null;
 

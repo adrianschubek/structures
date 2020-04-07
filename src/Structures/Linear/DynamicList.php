@@ -6,17 +6,78 @@
 
 namespace adrianschubek\Structures\Linear;
 
-class DynamicList
+class DynamicList implements LinearTraversable
 {
     private ?ListNode $first;
     private ?ListNode $last;
     private ?ListNode $current;
 
-    public function __construct(ListNode $first = null, ListNode $last = null, ListNode $current = null)
+    public function __construct($objects = [], ListNode $first = null, ListNode $last = null, ListNode $current = null)
     {
         $this->first = $first;
         $this->last = $last;
         $this->current = $current;
+        foreach ((array)$objects as $object) {
+            $this->append($object);
+        }
+    }
+
+    public function append($content)
+    {
+        if ($content === null) return;
+
+        if ($this->isEmpty()) {
+            $this->insert($content);
+            return;
+        }
+
+        $temp = new ListNode($content);
+        $this->last->setNextNode($temp);
+        $this->last = $temp;
+    }
+
+    public function isEmpty(): bool
+    {
+        return $this->first === null;
+    }
+
+    public function insert($content)
+    {
+        if ($content === null) return;
+
+        if ($this->hasAccess()) {
+            $temp = new ListNode($content);
+
+            if ($this->current !== $this->first) {
+                $prev = $this->getPrevious($this->current);
+                $temp->setNextNode($prev->getNextNode());
+                $prev->setNextNode($temp);
+            } else {
+                $temp->setNextNode($this->first);
+                $this->first = $temp;
+            }
+        } elseif ($this->isEmpty()) {
+            $temp = new ListNode($content);
+
+            $this->first = $temp;
+            $this->last = $temp;
+        }
+    }
+
+    public function hasAccess(): bool
+    {
+        return $this->current !== null;
+    }
+
+    public function getPrevious(ListNode $node): ?ListNode
+    {
+        if ($node === null || $node !== $this->first || !$this->isEmpty()) return null;
+
+        $temp = $this->first;
+        while ($temp !== null && $temp->getNextNode() !== $node) {
+            $temp = $temp->getNextNode();
+        }
+        return $temp;
     }
 
     public function toLast()
@@ -26,21 +87,11 @@ class DynamicList
         }
     }
 
-    public function isEmpty(): bool
-    {
-        return $this->first === null;
-    }
-
     public function setContent($content)
     {
         if ($content !== null || $this->hasAccess()) {
             $this->current->setContent($content);
         }
-    }
-
-    public function hasAccess(): bool
-    {
-        return $this->current !== null;
     }
 
     public function has($object): bool
@@ -94,17 +145,6 @@ class DynamicList
         $this->current = $temp;
     }
 
-    public function getPrevious(ListNode $node): ListNode
-    {
-        if ($node === null || $node !== $this->first || !$this->isEmpty()) return null;
-
-        $temp = $this->first;
-        while ($temp !== null && $temp->getNextNode() !== $node) {
-            $temp = $temp->getNextNode();
-        }
-        return $temp;
-    }
-
     public function concat(DynamicList $list)
     {
         if ($list === $this || $list === null || $list->isEmpty()) return;
@@ -122,41 +162,11 @@ class DynamicList
         $list->current = null;
     }
 
-    public function append($content)
+    public function diff(DynamicList $list): array
     {
-        if ($content === null) return;
+        if ($list === $this) return [];
 
-        if ($this->isEmpty()) {
-            $this->insert($content);
-            return;
-        }
-
-        $temp = new ListNode($content);
-        $this->last->setNextNode($temp);
-        $this->last = $temp;
-    }
-
-    public function insert($content)
-    {
-        if ($content === null) return;
-
-        if ($this->hasAccess()) {
-            $temp = new ListNode($content);
-
-            if ($this->current !== $this->first) {
-                $prev = $this->getPrevious($this->current);
-                $temp->setNextNode($prev->getNextNode());
-                $prev->setNextNode($temp);
-            } else {
-                $temp->setNextNode($this->first);
-                $this->first = $temp;
-            }
-        } elseif ($this->isEmpty()) {
-            $temp = new ListNode($content);
-
-            $this->first = $temp;
-            $this->last = $temp;
-        }
+        return array_diff($this->toArray(), $list->toArray());
     }
 
     public function toArray(): array

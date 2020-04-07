@@ -13,6 +13,9 @@ class BinaryTree
 
     public function __construct($object = null, BinaryTree $left = null, BinaryTree $right = null)
     {
+        if ($object === null) {
+            return;
+        }
         $this->node = new BinaryTreeNode($object);
         if ($left !== null) {
             $this->node->setLeftTree($left);

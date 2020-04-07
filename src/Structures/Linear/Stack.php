@@ -7,7 +7,7 @@
 namespace adrianschubek\Structures\Linear;
 
 
-class Stack
+class Stack implements LinearTraversable
 {
     private ?StackNode $head = null;
 
