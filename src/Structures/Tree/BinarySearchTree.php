@@ -7,6 +7,7 @@
 namespace adrianschubek\Structures\Tree;
 
 
+use adrianschubek\Structures\Linear\DynamicList;
 use adrianschubek\Structures\Wrapper\FloatWrapper;
 use adrianschubek\Structures\Wrapper\IntWrapper;
 use adrianschubek\Structures\Wrapper\StringWrapper;
@@ -40,21 +41,11 @@ class BinarySearchTree
         }
     }
 
-    public function setContent($object)
+    public static function fromList(DynamicList $list): self
     {
-        if ($object === null) return;
-
-        if ($this->isEmpty()) {
-            $this->node = new BinarySearchTreeNode($object);
-            $this->node->setLeftTree(new BinarySearchTree());
-            $this->node->setRightTree(new BinarySearchTree());
-        }
-        $this->node->setContent($object);
-    }
-
-    public function isEmpty(): bool
-    {
-        return $this->node === null;
+        $bst = new static();
+        $list->forEach(fn($el) => $bst->insert(self::wrapIfNeeded($el)));
+        return $bst;
     }
 
     public function insert(Comparable $object)
@@ -73,9 +64,118 @@ class BinarySearchTree
         }
     }
 
+    public function isEmpty(): bool
+    {
+        return $this->node === null;
+    }
+
     public function getContent(): Comparable
     {
         return $this->node->getContent();
+    }
+
+    private static function wrapIfNeeded($object = null)
+    {
+        if (is_string($object)) {
+            $object = new StringWrapper($object);
+        } elseif (is_float($object)) {
+            $object = new FloatWrapper($object);
+        } elseif (is_int($object)) {
+            $object = new IntWrapper($object);
+        }
+        return $object;
+    }
+
+    public static function fromBinarySearchTree(): BinarySearchTree
+    {
+
+    }
+
+    public static function fromString(string $string, string $delimiter = ","): BinarySearchTree
+    {
+        return BinarySearchTree::fromArray(explode($delimiter, $string));
+    }
+
+    public static function fromArray(array $arr): BinarySearchTree
+    {
+        $bst = new BinarySearchTree();
+        foreach ($arr as $x) {
+            $bst->insert(self::wrapIfNeeded($x));
+        }
+        return $bst;
+    }
+
+    private static function unwrapIfNeeded($object = null)
+    {
+        if ($object instanceof Wrapper) {
+            return $object->unpack();
+        }
+        return $object;
+    }
+
+    public function toJson(): string
+    {
+        return json_encode($this->toMultiArray());
+    }
+
+    public function toMultiArray(): array
+    {
+        $data = [];
+        $this->walk(function ($el, $depth) use (&$data) {
+            if ($el instanceof Wrapper) {
+                $data[$depth][] = $el->unpack();
+            } else {
+                $data[$depth][] = $el;
+            }
+        });
+        return $data;
+    }
+
+    public function walk(callable $callback)
+    {
+        $this->walkInternal($callback, $this);
+    }
+
+    private function walkInternal(callable $callback, BinarySearchTree $tree, int $depth = 0)
+    {
+        if (!$tree->isEmpty()) {
+            $this->walkInternal($callback, $tree->getLeftTree(), $depth + 1);
+
+            $callback($tree->getContent(), $depth);
+
+            $this->walkInternal($callback, $tree->getRightTree(), $depth + 1);
+        }
+    }
+
+    public function getLeftTree(): BinarySearchTree
+    {
+        return $this->node->getLeftTree();
+    }
+
+    public function getRightTree(): BinarySearchTree
+    {
+        return $this->node->getRightTree();
+    }
+
+    public function toList(): DynamicList
+    {
+        $list = new DynamicList();
+        $this->walk(function ($el) use (&$list) {
+            $list->append(self::unwrapIfNeeded($el));
+        });
+        return $list;
+    }
+
+    public function setContent($object)
+    {
+        if ($object === null) return;
+
+        if ($this->isEmpty()) {
+            $this->node = new BinarySearchTreeNode($object);
+            $this->node->setLeftTree(new BinarySearchTree());
+            $this->node->setRightTree(new BinarySearchTree());
+        }
+        $this->node->setContent($object);
     }
 
     public function remove(Comparable $object)
@@ -127,11 +227,6 @@ class BinarySearchTree
         return $this->node->getLeftTree()->getLastTreeWithNoLeftTree();
     }
 
-    public function getRightTree(): BinarySearchTree
-    {
-        return $this->node->getRightTree();
-    }
-
     public function search(Comparable $object): ?Comparable
     {
         if ($this->isEmpty() || $object === null) return null;
@@ -145,9 +240,9 @@ class BinarySearchTree
         return $object;
     }
 
-    public function getLeftTree(): BinarySearchTree
+    public function same(BinarySearchTree $tree): bool
     {
-        return $this->node->getLeftTree();
+        return $this->toArray() === $tree->toArray();
     }
 
     public function toArray(): array
@@ -161,27 +256,6 @@ class BinarySearchTree
             }
         });
         return $data;
-    }
-
-    public function walk(callable $callback)
-    {
-        $this->walkInternal($callback, $this);
-    }
-
-    private function walkInternal(callable $callback, BinarySearchTree $tree)
-    {
-        if (!$tree->isEmpty()) {
-            $this->walkInternal($callback, $tree->getLeftTree());
-
-            $callback($tree->getContent());
-
-            $this->walkInternal($callback, $tree->getRightTree());
-        }
-    }
-
-    public function same(BinarySearchTree $tree): bool
-    {
-
     }
 
     public function setLeftAndRightTree(BinarySearchTree $left, BinarySearchTree $right): self

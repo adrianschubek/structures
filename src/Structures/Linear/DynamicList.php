@@ -162,10 +162,14 @@ class DynamicList implements LinearTraversable
         $list->current = null;
     }
 
+    public function same(DynamicList $list): bool
+    {
+        return $this->diff($list) === [];
+    }
+
     public function diff(DynamicList $list): array
     {
         if ($list === $this) return [];
-
         return array_diff($this->toArray(), $list->toArray());
     }
 

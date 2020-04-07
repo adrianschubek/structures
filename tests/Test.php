@@ -4,7 +4,6 @@ use adrianschubek\Structures\Linear\Deque;
 use adrianschubek\Structures\Linear\DynamicList;
 use adrianschubek\Structures\Linear\Queue;
 use adrianschubek\Structures\Tree\BinarySearchTree;
-use adrianschubek\Structures\Tree\BinarySearchTreeConverter;
 use adrianschubek\Structures\Tree\BinaryTree;
 use adrianschubek\Structures\Wrapper\StringWrapper;
 
@@ -260,7 +259,7 @@ class Test2 extends PHPUnit\Framework\TestCase
         $tree->insert(new StringWrapper("Munich"));
         $tree->insert(new StringWrapper("Frankfurt"));
 
-        $t = BinarySearchTreeConverter::fromArray(["Berlin", "Hamburg", "Munich", "Frankfurt"]);
+        $t = BinarySearchTree::fromArray(["Berlin", "Hamburg", "Munich", "Frankfurt"]);
 
         self::assertSame($tree->toArray(), $t->toArray());
     }
@@ -274,8 +273,42 @@ class Test2 extends PHPUnit\Framework\TestCase
 
         $list = new DynamicList(["Berlin", "Hamburg", "Munich", "Frankfurt"]);
 
-        $t = BinarySearchTreeConverter::fromList($list);
+        $t = BinarySearchTree::fromList($list);
 
         $this->assertSame($tree->toArray(), $t->toArray());
+    }
+
+    public function test_binary_searchtree_converter_tostring()
+    {
+        $tree = BinarySearchTree::fromString("Berlin,Munich,Frankfurt,Hamburg");
+
+        $t = BinarySearchTree::fromArray(["Berlin", "Hamburg", "Munich", "Frankfurt"]);
+
+        $this->assertSame($tree->toArray(), $t->toArray());
+    }
+
+    public function test_binary_searchtree_converter_tomultiarray()
+    {
+        $t = BinarySearchTree::fromArray(["Berlin", "Hamburg", "Munich", "Frankfurt"]);
+        $arr = $t->toMultiArray();
+
+        $this->assertSame(0, 0);
+    }
+
+    public function test_binary_searchtree_converter_tojson()
+    {
+        $t = BinarySearchTree::fromArray(["Berlin", "Hamburg", "Munich", "Frankfurt"]);
+        $json = $t->toJson();
+
+        $this->assertSame(0, 0);
+    }
+
+    public function test_binary_searchtree_converter_tolist()
+    {
+        $list = new DynamicList(["Berlin", "Hamburg", "Munich", "Frankfurt"]);
+
+        $list2 = BinarySearchTree::fromArray(["Berlin", "Hamburg", "Munich", "Frankfurt"])->toList();
+
+        $this->assertTrue($list->same($list2));
     }
 }

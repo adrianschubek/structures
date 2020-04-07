@@ -32,4 +32,9 @@ class StringWrapper implements Wrapper, Comparable
     {
         return $this->value;
     }
+
+    public function __toString()
+    {
+        return $this->unpack();
+    }
 }
