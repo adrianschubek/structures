@@ -6,6 +6,8 @@
 
 namespace adrianschubek\Structures\Linear;
 
+use ArrayAccess;
+
 class DynamicList implements LinearTraversable
 {
     private ?ListNode $first;
@@ -189,7 +191,9 @@ class DynamicList implements LinearTraversable
         $list = clone $this;
         $list->toFirst();
         while ($list->hasAccess()) {
-            $callback($list->getContent());
+            if ($callback($list->getContent()) === false) {
+                break;
+            }
             $list->next();
         }
     }

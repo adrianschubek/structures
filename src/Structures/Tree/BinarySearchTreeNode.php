@@ -6,6 +6,7 @@
 
 namespace adrianschubek\Structures\Tree;
 
+use adrianschubek\Support\Comparable;
 
 class BinarySearchTreeNode
 {

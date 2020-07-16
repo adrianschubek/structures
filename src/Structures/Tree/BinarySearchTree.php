@@ -12,6 +12,7 @@ use adrianschubek\Structures\Wrapper\FloatWrapper;
 use adrianschubek\Structures\Wrapper\IntWrapper;
 use adrianschubek\Structures\Wrapper\StringWrapper;
 use adrianschubek\Structures\Wrapper\Wrapper;
+use adrianschubek\Support\Comparable;
 
 class BinarySearchTree
 {
@@ -84,11 +85,6 @@ class BinarySearchTree
             $object = new IntWrapper($object);
         }
         return $object;
-    }
-
-    public static function fromBinarySearchTree(): BinarySearchTree
-    {
-
     }
 
     public static function fromString(string $string, string $delimiter = ","): BinarySearchTree

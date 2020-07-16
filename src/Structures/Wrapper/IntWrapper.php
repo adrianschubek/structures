@@ -7,7 +7,7 @@
 namespace adrianschubek\Structures\Wrapper;
 
 
-use adrianschubek\Structures\Tree\Comparable;
+use adrianschubek\Support\Comparable;
 
 class IntWrapper implements Wrapper, Comparable
 {
@@ -18,11 +18,6 @@ class IntWrapper implements Wrapper, Comparable
         $this->value = $value;
     }
 
-    public function unpack(): int
-    {
-        return $this->value;
-    }
-
     public function set(int $value): void
     {
         $this->value = $value;
@@ -31,5 +26,10 @@ class IntWrapper implements Wrapper, Comparable
     public function compareTo(Comparable $object): int
     {
         return $this->value <=> $object->unpack();
+    }
+
+    public function unpack(): int
+    {
+        return $this->value;
     }
 }

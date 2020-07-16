@@ -7,7 +7,9 @@
 namespace adrianschubek\Structures\Wrapper;
 
 
-use adrianschubek\Structures\Tree\Comparable;
+
+
+use adrianschubek\Support\Comparable;
 
 class FloatWrapper implements Wrapper, Comparable
 {

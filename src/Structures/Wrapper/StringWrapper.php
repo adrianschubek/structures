@@ -7,7 +7,7 @@
 namespace adrianschubek\Structures\Wrapper;
 
 
-use adrianschubek\Structures\Tree\Comparable;
+use adrianschubek\Support\Comparable;
 
 class StringWrapper implements Wrapper, Comparable
 {

@@ -278,6 +278,11 @@ class Test2 extends PHPUnit\Framework\TestCase
         $this->assertSame($tree->toArray(), $t->toArray());
     }
 
+//    public function test_binary_searchtree_access()
+//    {
+//
+//    }
+
     public function test_binary_searchtree_converter_tostring()
     {
         $tree = BinarySearchTree::fromString("Berlin,Munich,Frankfurt,Hamburg");
